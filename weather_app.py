@@ -20,9 +20,11 @@ import re
 
 def zip_or_ip():
     response = ''
+    print('\n')
     print('You can check the weather by putting in a zip code or just use your current location.')
+    print('\n')
     while response not in ['Y','y','N','n']:
-        response = input('Would you like to use a zip code? (y/n): ')
+        response = input('Would you like to use a zip code or jsut use your current location? (y/n): ')
         if response not in ['Y','y','N','n']:
             print('Sorry, please choose y or n')
         elif response in ['Y','y']:
@@ -69,6 +71,7 @@ def get_uv_index(soup):
 def show_weather(location, curr_temp, real_feel, high, low, wind_speed, humidity, uv_index):
     if high == '--':
         print(f""" 
+
         Here are the local weather conditions in {location}:
 
         The current temperature is {curr_temp}
@@ -81,6 +84,7 @@ def show_weather(location, curr_temp, real_feel, high, low, wind_speed, humidity
 
     elif low =='--':
         print(f""" 
+
         Here are the local weather conditions in {location}:
 
         The current temperature is {curr_temp}
@@ -93,6 +97,7 @@ def show_weather(location, curr_temp, real_feel, high, low, wind_speed, humidity
 
     else:
         print(f""" 
+
         Here are the local weather conditions in {location}:
 
         The current temperature is {curr_temp}
@@ -108,30 +113,42 @@ Main Code:
 Ask user if they want to input a zip code or just use their location.
 Then use their location to get the zip code or use the zip code the input to fetch weather data from weather.com
 """
+again = True
 
+while again:
 
-base_url = 'https://weather.com/weather/today/l/{}'
+    base_url = 'https://weather.com/weather/today/l/{}'
 
-if zip_or_ip():
-    location = get_zip()
-else:
-    location = get_location()
+    if zip_or_ip():
+        location = get_zip()
+    else:
+        location = get_location()
 
-res = requests.get(base_url.format(location))
-soup = bs4.BeautifulSoup(res.text, 'lxml')
+    res = requests.get(base_url.format(location))
+    soup = bs4.BeautifulSoup(res.text, 'lxml')
 
-try:
-    curr_temp = get_curr_temp(soup)
-    real_feel = get_real_feel(soup)
-    high,low = get_high_low(soup).split('/')
-    wind_speed = get_wind_speed(soup)[14:]
-    humidity = get_humidity(soup)
-    uv_index = get_uv_index(soup)
+    try:
+        curr_temp = get_curr_temp(soup)
+        real_feel = get_real_feel(soup)
+        high,low = get_high_low(soup).split('/')
+        wind_speed = get_wind_speed(soup)[14:]
+        humidity = get_humidity(soup)
+        uv_index = get_uv_index(soup)
 
-    show_weather(location, curr_temp, real_feel, high, low, wind_speed, humidity, uv_index)
+        show_weather(location, curr_temp, real_feel, high, low, wind_speed, humidity, uv_index)
 
-except Exception as e:
-    print('There was an error')
-    print(e)
+    except Exception as e:
+        print('There was an error')
+        print(e)
 
+    response = ''
+
+    while response not in ['Y','y','N','n']:
+        response = input('Would you like to check a different location? (y/n): ')
+        if response not in ['Y','y','N','n']:
+            print('Sorry, please choose y or n')
+        elif response in ['Y','y']:
+            again = True
+        else:
+            again = False
 
