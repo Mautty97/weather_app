@@ -26,7 +26,7 @@ def zip_or_ip():
     print('You can check the weather by putting in a zip code or just use your current location.')
     print('\n')
     while response not in ['Y','y','N','n']:
-        response = input('Would you like to use a zip code or jsut use your current location? (y/n): ')
+        response = input('Would you like to use a zip code or just use your current location? (y/n): ')
         if response not in ['Y','y','N','n']:
             print('Sorry, please choose y or n')
         elif response in ['Y','y']:
