@@ -13,11 +13,13 @@ Libraries used:
 -re
 
 '''
+
 import requests
 import bs4
 import geocoder
 import re
 
+#check if user wants to use a zip code or their current location
 def zip_or_ip():
     response = ''
     print('\n')
@@ -32,6 +34,7 @@ def zip_or_ip():
         else:
             return False
 
+#get a zip code from the user
 def get_zip():
         valid_zip = re.compile(r'\d\d\d\d\d')
         location = input('Please enter a zip code (ex: 94043): ')
@@ -39,35 +42,43 @@ def get_zip():
             location = input('Please enter a valid zip code (ex: 94043): ')
         return location
 
+#gets users ip address and returns a zip code from that
 def get_location():
     g = geocoder.ip('me')
     return g.postal
 
+#get current temp data from weather soup
 def get_curr_temp(soup):
     temp = soup.select('.CurrentConditions--tempValue--3a50n')
     return(temp[0].text)
 
+#get real feel temp from weather soup
 def get_real_feel(soup):
     all_tags = soup.select('.removeIfEmpty')
     real_feel = re.search(r'\d+\W', all_tags[13].text)
     return real_feel[0]
 
+#get high and low temps from weather soup (have to use tuple unpacking to separate them)
 def get_high_low(soup):
     high_low = soup.select('.WeatherDetailsListItem--wxData--2s6HT')
     return high_low[0].text
 
+#get wind speed from weather soup as a long string
 def get_wind_speed(soup):
     wind_speed = soup.select('.WeatherDetailsListItem--wxData--2s6HT')
     return wind_speed[1].text
 
+#get humidity from weather soup
 def get_humidity(soup):
     humidity = soup.select('.WeatherDetailsListItem--wxData--2s6HT')
     return humidity[2].text
 
+#get UV index from weather soup
 def get_uv_index(soup):
     uv_index = soup.select('.WeatherDetailsListItem--wxData--2s6HT')
     return uv_index[5].text
 
+#pass in weather conditions and print them out (if the high or low has already happend it will return -- for the temp)
 def show_weather(location, curr_temp, real_feel, high, low, wind_speed, humidity, uv_index):
     if high == '--':
         print(f""" 
